@@ -1,0 +1,47 @@
+Abrechnungsnummer;Bezeichnung Abrechnungssparte;Spartennummer;Titel des Werkes;Werk-Nr.;Fassung;Bewertung;Beteiligtenrolle;Kontoart;Anteilart;Nutzungsanzahl;Ausschuettungsbetrag;Nutzer;Geschäftsjahr;Verteilungstermin
+5001230001;MOD S: Music-on-Demand (Streaming);12;Nachtlicht;1234567;001;00;1;HK;NA;28000;55,5200;Spotify;2023;01.10.2023
+5001230002;MOD S: Music-on-Demand (Streaming);12;Nachtlicht;1234567;001;00;1;HK;NA;7200;16,2400;Apple Music;2023;01.10.2023
+5001230003;MOD S: Music-on-Demand (Streaming);12;Nachtlicht;1234567;001;00;1;HK;NA;4100;7,2800;Amazon Music;2023;01.10.2023
+5001230004;GOP: Gemischte Online-Plattformen;GP;Nachtlicht;1234567;001;00;1;HK;NA;15000;22,2400;YouTube;2023;01.10.2023
+5001230005;GOP: Gemischte Online-Plattformen;GP;Nachtlicht;1234567;001;00;1;HK;NA;8000;9,7000;TikTok;2023;01.10.2023
+5001230006;R: Tonrundfunk;R1;Nachtlicht;1234567;001;12;1;HK;NA;8;22,4000;WDR 1Live;2023;01.10.2023
+5001230007;R: Tonrundfunk;R1;Nachtlicht;1234567;001;12;1;HK;NA;5;14,0000;SWR3;2023;01.10.2023
+5001230008;MOD S: Music-on-Demand (Streaming);12;Morgenrot;1234568;001;00;1;HK;NA;38000;75,3500;Spotify;2023;01.10.2023
+5001230009;MOD S: Music-on-Demand (Streaming);12;Morgenrot;1234568;001;00;1;HK;NA;11200;25,2600;Apple Music;2023;01.10.2023
+5001230010;MOD S: Music-on-Demand (Streaming);12;Morgenrot;1234568;001;00;1;HK;NA;6800;12,0700;Amazon Music;2023;01.10.2023
+5001230011;GOP: Gemischte Online-Plattformen;GP;Morgenrot;1234568;001;00;1;HK;NA;30000;44,4900;YouTube;2023;01.10.2023
+5001230012;GOP: Gemischte Online-Plattformen;GP;Morgenrot;1234568;001;00;1;HK;NA;16000;19,4000;TikTok;2023;01.10.2023
+5001230013;R: Tonrundfunk;R1;Morgenrot;1234568;001;12;1;HK;NA;14;39,2000;WDR 1Live;2023;01.10.2023
+5001230014;R: Tonrundfunk;R1;Morgenrot;1234568;001;12;1;HK;NA;8;22,4000;NDR 2;2023;01.10.2023
+5001230015;FS: Fernsehrundfunk;R5;Morgenrot;1234568;001;12;1;HK;NA;3;67,5000;ARD;2023;01.10.2023
+5001230016;U: Unterhaltungs- und Tanzmusik;U1;Morgenrot;1234568;001;00;1;HK;NA;5;35,0000;Festival Berlin;2023;01.10.2023
+5001230017;MOD S: Music-on-Demand (Streaming);12;Sternenstaub;1234569;001;00;1;HK;NA;18000;35,6900;Spotify;2023;01.10.2023
+5001230018;MOD S: Music-on-Demand (Streaming);12;Sternenstaub;1234569;001;00;1;HK;NA;5600;12,6300;Apple Music;2023;01.10.2023
+5001230019;GOP: Gemischte Online-Plattformen;GP;Sternenstaub;1234569;001;00;1;HK;NA;10000;14,8300;YouTube;2023;01.10.2023
+5001230020;R: Tonrundfunk;R1;Sternenstaub;1234569;001;12;1;HK;NA;4;11,2000;SWR3;2023;01.10.2023
+5001230021;MOD S: Music-on-Demand (Streaming);12;Freiheit;1234571;001;00;1;HK;NA;52000;103,1200;Spotify;2023;01.10.2023
+5001230022;MOD S: Music-on-Demand (Streaming);12;Freiheit;1234571;001;00;1;HK;NA;15000;33,8300;Apple Music;2023;01.10.2023
+5001230023;MOD S: Music-on-Demand (Streaming);12;Freiheit;1234571;001;00;1;HK;NA;8400;14,9100;Amazon Music;2023;01.10.2023
+5001230024;MOD S: Music-on-Demand (Streaming);12;Freiheit;1234571;001;00;1;HK;NA;4200;11,0700;Deezer;2023;01.10.2023
+5001230025;GOP: Gemischte Online-Plattformen;GP;Freiheit;1234571;001;00;1;HK;NA;38000;56,3500;YouTube;2023;01.10.2023
+5001230026;GOP: Gemischte Online-Plattformen;GP;Freiheit;1234571;001;00;1;HK;NA;22000;26,6800;TikTok;2023;01.10.2023
+5001230027;R: Tonrundfunk;R1;Freiheit;1234571;001;12;1;HK;NA;20;56,0000;WDR 1Live;2023;01.10.2023
+5001230028;R: Tonrundfunk;R1;Freiheit;1234571;001;12;1;HK;NA;14;39,2000;NDR 2;2023;01.10.2023
+5001230029;R: Tonrundfunk;R1;Freiheit;1234571;001;12;1;HK;NA;8;22,4000;SWR3;2023;01.10.2023
+5001230030;FS: Fernsehrundfunk;R5;Freiheit;1234571;001;12;1;HK;NA;5;112,5000;ZDF;2023;01.10.2023
+5001230031;U: Unterhaltungs- und Tanzmusik;U1;Freiheit;1234571;001;00;1;HK;NA;10;70,0000;Tour 2023;2023;01.10.2023
+5001230032;PHO VR: Tontraeger;20;Freiheit;1234571;001;00;1;HK;NA;1200;26,6400;CD Produktion;2023;01.10.2023
+5001230033;MOD S: Music-on-Demand (Streaming);12;Wellenbrecher;1234575;001;00;1;HK;NA;22000;43,6200;Spotify;2023;01.10.2023
+5001230034;MOD S: Music-on-Demand (Streaming);12;Wellenbrecher;1234575;001;00;1;HK;NA;6400;14,4300;Apple Music;2023;01.10.2023
+5001230035;GOP: Gemischte Online-Plattformen;GP;Wellenbrecher;1234575;001;00;1;HK;NA;16000;23,7200;YouTube;2023;01.10.2023
+5001230036;GOP: Gemischte Online-Plattformen;GP;Wellenbrecher;1234575;001;00;1;HK;NA;8000;9,7000;TikTok;2023;01.10.2023
+5001230037;R: Tonrundfunk;R1;Wellenbrecher;1234575;001;12;1;HK;NA;10;28,0000;WDR 1Live;2023;01.10.2023
+5001230038;U: Unterhaltungs- und Tanzmusik;U1;Wellenbrecher;1234575;001;00;1;HK;NA;6;42,0000;Konzert Hamburg;2023;01.10.2023
+5001230039;MOD S: Music-on-Demand (Streaming);12;Zeitgeist;1234576;001;00;1;HK;NA;30000;59,5000;Spotify;2023;01.10.2023
+5001230040;MOD S: Music-on-Demand (Streaming);12;Zeitgeist;1234576;001;00;1;HK;NA;8800;19,8500;Apple Music;2023;01.10.2023
+5001230041;GOP: Gemischte Online-Plattformen;GP;Zeitgeist;1234576;001;00;1;HK;NA;22000;32,6200;YouTube;2023;01.10.2023
+5001230042;GOP: Gemischte Online-Plattformen;GP;Zeitgeist;1234576;001;00;1;HK;NA;12000;14,5500;TikTok;2023;01.10.2023
+5001230043;R: Tonrundfunk;R1;Zeitgeist;1234576;001;12;1;HK;NA;15;42,0000;WDR 1Live;2023;01.10.2023
+5001230044;R: Tonrundfunk;R1;Zeitgeist;1234576;001;12;1;HK;NA;8;22,4000;SWR3;2023;01.10.2023
+5001230045;FS: Fernsehrundfunk;R5;Zeitgeist;1234576;001;12;1;HK;NA;3;67,5000;ZDF;2023;01.10.2023
+5001230046;U: Unterhaltungs- und Tanzmusik;U1;Zeitgeist;1234576;001;00;1;HK;NA;8;56,0000;Konzert Köln;2023;01.10.2023
