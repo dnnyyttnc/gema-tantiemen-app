@@ -1,24 +1,36 @@
+// Official GEMA distribution categories (Sparten) from v2.20 specs
 export type SparteCode =
-  | 'MOD S' | 'MOD S VR'
-  | 'MOD D' | 'MOD D VR'
-  | 'GOP' | 'GOP VR'
-  | 'VOD S' | 'VOD S VR'
-  | 'VOD D' | 'VOD D VR'
-  | 'WEB' | 'WEB VR'
-  | 'KMOD' | 'KMOD VR'
-  | 'IR' | 'IFS'
-  | 'R' | 'R VR'
-  | 'FS' | 'FS VR'
-  | 'T' | 'T FS' | 'T FS VR'
-  | 'TD' | 'TD VR'
-  | 'MED' | 'MED VR'
-  | 'U' | 'UD'
-  | 'E' | 'ED' | 'EM'
-  | 'BM' | 'KI'
-  | 'DK' | 'DK VR'
-  | 'PHONO VR' | 'BT VR'
-  | 'MT VR' | 'GT VR'
-  | 'A' | 'A AR' | 'A VR'
+  // Online
+  | 'MOD S' | 'MOD S VR'   // Music on Demand Streaming
+  | 'MOD D' | 'MOD D VR'   // Music on Demand Download
+  | 'GOP' | 'GOP VR'       // Gemischte Online-Plattformen (YouTube, TikTok etc.)
+  | 'VOD S' | 'VOD S VR'   // Video on Demand Streaming
+  | 'VOD D' | 'VOD D VR'   // Video on Demand Download
+  | 'WEB' | 'WEB VR'       // Websites Streaming
+  | 'KMOD' | 'KMOD VR'     // Ruftonmelodien
+  // Radio
+  | 'R' | 'R VR'           // Radio / Radio Vervielfältigungsrecht
+  | 'R GR' | 'R GR VR'     // Radio Großes Recht
+  // TV / Film
+  | 'FS' | 'FS VR'         // Fernsehen
+  | 'FS GR' | 'FS GR VR'   // Fernsehen Großes Recht
+  | 'T' | 'T FS' | 'T FS VR' // Kino/Tonfilm
+  | 'TD' | 'TD VR'         // Tonfilm Direktverteilung
+  | 'MED' | 'MED VR'       // Mediatheken
+  // Live / Wiedergabe
+  | 'U' | 'UD'             // Unterhaltungsmusik / Direktverteilung
+  | 'M' | 'M UD'           // Musikwiedergaben / Direktverteilung
+  | 'MD'                    // Musikwiedergaben Direktverteilung
+  | 'E' | 'ED' | 'EM'     // Ernste Musik
+  | 'BM'                    // Bühnenmusik
+  | 'DK' | 'DK VR'         // Diskotheken
+  // Physical
+  | 'PHONO VR'              // Tonträger
+  | 'BT VR'                 // Bildtonträger
+  // International
+  | 'A' | 'A VR'           // Ausland
+  // Special
+  | 'ZSL'                   // Zuschläge (Supplements)
   | string;
 
 export type CategoryGroup =

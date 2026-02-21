@@ -1,8 +1,15 @@
-/** Parse German-locale number: 1.234,56 → 1234.56 */
+/** Parse German-locale number: 1.234,56 → 1234.56 (v1.0 format with comma decimals) */
 export function parseGermanNumber(value: string): number {
   if (!value || value.trim() === '') return 0;
   const cleaned = value.trim().replace(/\./g, '').replace(',', '.');
   const num = parseFloat(cleaned);
+  return isNaN(num) ? 0 : num;
+}
+
+/** Parse international number: 1234.5678 → 1234.5678 (v2.0+ format with period decimals) */
+export function parseNumber(value: string): number {
+  if (!value || value.trim() === '') return 0;
+  const num = parseFloat(value.trim());
   return isNaN(num) ? 0 : num;
 }
 
