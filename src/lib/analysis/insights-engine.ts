@@ -61,6 +61,34 @@ export function generateInsights(entries: GemaRoyaltyEntry[]): Insight[] {
       body: `${best.name} zahlt ${ratio}x mehr pro Play als ${worst.name} (${formatEurCents(best.rate)} vs. ${formatEurCents(worst.rate)} pro Play).`,
       importance: 10,
     });
+
+    // Promotion recommendation: find platform with best rate but not highest total
+    const topEarner = [...platformRates].sort((a, b) => b.betrag - a.betrag)[0];
+    if (best.name !== topEarner.name) {
+      const potentialGain = best.rate * topEarner.nutzungen - topEarner.betrag;
+      insights.push({
+        id: 'promo_recommendation',
+        type: 'discovery',
+        emoji: '📣',
+        title: 'Promotion-Empfehlung',
+        body: `${best.name} zahlt pro Play am meisten, aber ${topEarner.name} hat die meisten Plays. Wenn du ${best.name} stärker bewirbst, könntest du ca. ${formatEur(potentialGain)} mehr verdienen.`,
+        importance: 11,
+      });
+    }
+
+    // Spotify vs. others comparison (if Spotify is in the data)
+    const spotify = platformRates.find((p) => p.name === 'Spotify');
+    if (spotify && best.name !== 'Spotify') {
+      const spotifyRatio = (best.rate / spotify.rate).toFixed(1);
+      insights.push({
+        id: 'spotify_comparison',
+        type: 'comparison',
+        emoji: '🎧',
+        title: `${best.name} schlägt Spotify`,
+        body: `Pro Play verdienst du bei ${best.name} ${spotifyRatio}x mehr als bei Spotify. Es lohnt sich, Fans dorthin zu lenken!`,
+        importance: 9.5,
+      });
+    }
   }
 
   // Top song

@@ -1,13 +1,14 @@
 'use client';
 
-import { Euro, Play, Music, Crown } from 'lucide-react';
+import { Euro, Play, Music, Crown, TrendingUp, ArrowUpRight } from 'lucide-react';
 import { StatCard } from '@/components/cards/stat-card';
 import { RevenueDonut } from '@/components/charts/revenue-donut';
 import { PlatformBars } from '@/components/charts/platform-bars';
 import { useStats, useCategoryBreakdown, usePlatformBreakdown, useSongRankings } from '@/lib/hooks/use-royalty-data';
 import { useRoyaltyStore } from '@/lib/store/royalty-store';
-import { formatEur, formatNumber } from '@/lib/utils/format';
+import { formatEur, formatNumber, formatPerStreamRate } from '@/lib/utils/format';
 import { CATEGORY_INFO } from '@/lib/constants/categories';
+import { getPlatformName, getPlatformColor } from '@/lib/constants/platforms';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -41,10 +42,26 @@ export default function OverviewPage() {
   const topCat = stats.topCategory;
   const topCatLabel = topCat ? (CATEGORY_INFO[topCat]?.label || topCat) : '–';
 
+  // Per-play rate rankings
+  const platformRates = Object.entries(platforms)
+    .filter(([, v]) => v.nutzungen > 0)
+    .map(([name, v]) => ({
+      name: getPlatformName(name),
+      originalName: name,
+      color: getPlatformColor(name),
+      rate: v.betrag / v.nutzungen,
+      betrag: v.betrag,
+      nutzungen: v.nutzungen,
+    }))
+    .sort((a, b) => b.rate - a.rate);
+
+  const bestRate = platformRates[0];
+  const worstRate = platformRates.length > 1 ? platformRates[platformRates.length - 1] : null;
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Übersicht</h1>
+        <h1 className="font-display text-2xl tracking-tight">Übersicht</h1>
         <p className="text-muted-foreground text-sm mt-1">
           Deine GEMA-Tantiemen im Überblick
         </p>
@@ -72,7 +89,7 @@ export default function OverviewPage() {
           label="Werke"
           value={stats.uniqueWorks}
           icon={Music}
-          gradient="bg-gradient-to-br from-purple-500 to-purple-700"
+          gradient="bg-gradient-to-br from-amber-500 to-amber-700"
           delay={0.2}
         />
         <StatCard
@@ -84,6 +101,62 @@ export default function OverviewPage() {
           delay={0.3}
         />
       </div>
+
+      {/* Pro-Play Revenue Highlight */}
+      {bestRate && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="bg-card border border-border rounded-xl p-5"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-primary" />
+              <h2 className="text-lg font-semibold">Verdienst pro Play</h2>
+            </div>
+            <Link href="/platforms" className="text-xs text-primary hover:underline flex items-center gap-1">
+              Details <ArrowUpRight className="w-3 h-3" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {platformRates.slice(0, 6).map((p, i) => {
+              const maxRate = platformRates[0].rate;
+              const barWidth = maxRate > 0 ? (p.rate / maxRate) * 100 : 0;
+              return (
+                <div key={p.originalName} className="flex items-center gap-3 py-1.5">
+                  <span className="text-xs text-muted-foreground w-4 text-right font-mono">{i + 1}</span>
+                  <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: p.color }} />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-0.5">
+                      <span className="text-sm font-medium truncate">{p.name}</span>
+                      <span className="text-xs font-mono text-primary ml-2 shrink-0">{formatPerStreamRate(p.rate)}</span>
+                    </div>
+                    <div className="bg-muted rounded-full h-1.5 overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${barWidth}%` }}
+                        transition={{ delay: 0.3 + i * 0.04, duration: 0.5 }}
+                        className="h-full rounded-full bg-primary/70"
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {bestRate && worstRate && (
+            <p className="text-xs text-muted-foreground mt-4 border-t border-border pt-3">
+              <span className="text-primary font-medium">{bestRate.name}</span> zahlt{' '}
+              <span className="text-primary font-medium">{(bestRate.rate / worstRate.rate).toFixed(1)}x</span>{' '}
+              mehr pro Play als <span className="font-medium">{worstRate.name}</span>.
+              {bestRate.name !== 'Spotify' && (
+                <> Tipp: Mehr {bestRate.name} promoten!</>
+              )}
+            </p>
+          )}
+        </motion.div>
+      )}
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -1,7 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Upload, Disc3 } from 'lucide-react';
+import Image from 'next/image';
+import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useStats, useAvailablePeriods } from '@/lib/hooks/use-royalty-data';
@@ -24,9 +25,9 @@ export function TopBar() {
 
   return (
     <header className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 md:px-6 border-b border-border bg-background/80 backdrop-blur-xl">
-      <div className="flex items-center gap-3 md:hidden">
-        <Disc3 className="w-6 h-6 text-primary" />
-        <span className="font-bold text-sm">GEMA Royalties</span>
+      <div className="flex items-center gap-2.5 md:hidden">
+        <Image src="/logos/logo-white.png" alt="exe" width={24} height={24} className="opacity-90" />
+        <span className="font-display text-sm">GEMA Royalties</span>
       </div>
 
       <div className="hidden md:flex items-center gap-3">

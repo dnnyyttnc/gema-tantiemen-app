@@ -3,7 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { Disc3, ArrowRight, BarChart3, Zap, Sparkles } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowRight, BarChart3, Sparkles, Shield, LineChart, Zap } from 'lucide-react';
 import { DropZone } from '@/components/upload/drop-zone';
 import { useRoyaltyStore } from '@/lib/store/royalty-store';
 import { useHydration } from '@/lib/hooks/use-hydration';
@@ -40,10 +41,11 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen gradient-bg flex flex-col">
-      <header className="flex items-center justify-between px-6 py-4">
-        <div className="flex items-center gap-2">
-          <Disc3 className="w-7 h-7 text-primary" />
-          <span className="font-bold text-lg tracking-tight">GEMA Royalties</span>
+      {/* Header */}
+      <header className="flex items-center justify-between px-6 py-5">
+        <div className="flex items-center gap-3">
+          <Image src="/logos/logo-white.png" alt="exe" width={32} height={32} className="opacity-90" />
+          <span className="font-display text-lg tracking-tight">GEMA Royalties</span>
         </div>
         {hasData && (
           <Button
@@ -57,40 +59,29 @@ export default function LandingPage() {
         )}
       </header>
 
+      {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center px-6 pb-20">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-10 max-w-2xl"
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center mb-12 max-w-2xl"
         >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: 'spring', bounce: 0.4, delay: 0.2 }}
-            className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 text-sm text-primary mb-6"
-          >
-            <Zap className="w-4 h-4" />
-            Deine Tantiemen, spielerisch visualisiert
-          </motion.div>
-
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
-            GEMA-Tantiemen
+          <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl tracking-tight leading-[1.05]">
+            Deine Tantiemen.
             <br />
-            <span className="bg-gradient-to-r from-primary via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              auf einen Blick
-            </span>
+            <span className="text-primary">Dein Durchblick.</span>
           </h1>
 
-          <p className="mt-4 text-lg text-muted-foreground max-w-lg mx-auto">
-            Lade deine GEMA-Abrechnung hoch und entdecke sofort, welche Plattformen und Songs am meisten einbringen.
+          <p className="mt-6 text-lg text-muted-foreground max-w-md mx-auto leading-relaxed">
+            GEMA-Abrechnung hochladen, sofort sehen wo dein Geld herkommt &mdash; und wo du mehr rausholen kannst.
           </p>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
           className="w-full"
         >
           <DropZone onSuccess={() => router.push('/overview')} />
@@ -99,8 +90,8 @@ export default function LandingPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="mt-4 text-center"
+              transition={{ delay: 0.4 }}
+              className="mt-5 text-center"
             >
               <button
                 onClick={loadDemo}
@@ -108,7 +99,7 @@ export default function LandingPage() {
                 className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
               >
                 <Sparkles className="w-4 h-4" />
-                {loadingDemo ? 'Demo wird geladen...' : 'Oder Demo-Daten laden zum Ausprobieren'}
+                {loadingDemo ? 'Demo wird geladen...' : 'Demo-Daten laden zum Ausprobieren'}
               </button>
             </motion.div>
           )}
@@ -118,18 +109,18 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.3 }}
             className="mt-8"
           >
             <button
               onClick={() => router.push('/overview')}
-              className="group flex items-center gap-4 bg-card/50 backdrop-blur border border-border rounded-xl px-6 py-4 hover:bg-card/80 transition-all"
+              className="group flex items-center gap-4 bg-card/60 backdrop-blur border border-border rounded-xl px-6 py-4 hover:border-primary/30 transition-all"
             >
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                 <BarChart3 className="w-5 h-5 text-primary" />
               </div>
               <div className="text-left">
-                <p className="text-sm font-medium">Du hast bereits Daten importiert</p>
+                <p className="text-sm font-medium">Daten bereits importiert</p>
                 <p className="text-xs text-muted-foreground">
                   {entries.length} Einträge &middot; {formatEur(totalBetrag)} Gesamt
                 </p>
@@ -139,31 +130,43 @@ export default function LandingPage() {
           </motion.div>
         )}
 
+        {/* Features */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl w-full"
+          transition={{ delay: 0.5 }}
+          className="mt-20 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl w-full"
         >
           {[
-            { icon: '🔒', title: '100% Privat', description: 'Deine Daten bleiben in deinem Browser. Kein Upload auf Server.' },
-            { icon: '📊', title: 'Sofortige Analyse', description: 'CSV oder PDF hochladen und sofort Einblicke erhalten.' },
-            { icon: '🎮', title: 'Gamifiziert', description: 'Level, Achievements und spielerische Visualisierungen.' },
+            { icon: Shield, title: '100% Privat', description: 'Alles bleibt in deinem Browser. Kein Server, keine Cookies.' },
+            { icon: LineChart, title: 'Pro-Play Analyse', description: 'Finde heraus welche Plattform dir pro Klick am meisten zahlt.' },
+            { icon: Zap, title: 'Sofort loslegen', description: 'CSV oder PDF hochladen und in Sekunden Insights erhalten.' },
           ].map((feature, i) => (
             <motion.div
               key={feature.title}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 + i * 0.1 }}
+              transition={{ delay: 0.6 + i * 0.08 }}
               className="text-center p-4"
             >
-              <div className="text-2xl mb-2">{feature.icon}</div>
-              <h3 className="font-semibold text-sm">{feature.title}</h3>
-              <p className="text-xs text-muted-foreground mt-1">{feature.description}</p>
+              <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/8 mb-3">
+                <feature.icon className="w-5 h-5 text-primary" />
+              </div>
+              <h3 className="font-bold text-sm">{feature.title}</h3>
+              <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{feature.description}</p>
             </motion.div>
           ))}
         </motion.div>
       </main>
+
+      {/* Footer */}
+      <footer className="flex items-center justify-center gap-2 pb-6 text-xs text-muted-foreground">
+        <span>Powered by</span>
+        <a href="https://www.exe.ist/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
+          <Image src="/logos/logo-white.png" alt="exe" width={16} height={16} className="opacity-70" />
+          <span className="font-bold">exe</span>
+        </a>
+      </footer>
     </div>
   );
 }

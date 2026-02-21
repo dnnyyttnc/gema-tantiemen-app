@@ -29,7 +29,7 @@ export default function LeaderboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Song-Rangliste</h1>
+        <h1 className="font-display text-2xl tracking-tight">Song-Rangliste</h1>
         <p className="text-muted-foreground text-sm mt-1">
           Deine erfolgreichsten Werke nach Einnahmen
         </p>

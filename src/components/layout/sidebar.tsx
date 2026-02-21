@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
@@ -11,7 +12,6 @@ import {
   Lightbulb,
   Settings,
   Upload,
-  Disc3,
   ChevronLeft,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -44,13 +44,13 @@ export function Sidebar() {
     >
       {/* Logo */}
       <div className="flex items-center justify-between px-4 h-16 border-b border-sidebar-border">
-        <Link href="/" className="flex items-center gap-2 min-w-0">
-          <Disc3 className="w-7 h-7 text-sidebar-primary shrink-0" />
+        <Link href="/" className="flex items-center gap-2.5 min-w-0">
+          <Image src="/logos/logo-white.png" alt="exe" width={26} height={26} className="shrink-0 opacity-90" />
           {!collapsed && (
             <motion.span
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="font-bold text-sm tracking-tight truncate"
+              className="font-display text-sm tracking-tight truncate"
             >
               GEMA Royalties
             </motion.span>

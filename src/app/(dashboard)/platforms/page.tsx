@@ -34,14 +34,39 @@ export default function PlatformsPage() {
     );
   }
 
+  // Best per-play rate
+  const rateRanking = [...platformList].filter((p) => p.rate > 0).sort((a, b) => b.rate - a.rate);
+  const bestPayer = rateRanking[0];
+  const worstPayer = rateRanking.length > 1 ? rateRanking[rateRanking.length - 1] : null;
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Plattformen</h1>
+        <h1 className="font-display text-2xl tracking-tight">Plattformen</h1>
         <p className="text-muted-foreground text-sm mt-1">
           Vergleiche Einnahmen und Pro-Play-Raten über alle Plattformen
         </p>
       </div>
+
+      {/* Insight Banner */}
+      {bestPayer && worstPayer && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-primary/8 border border-primary/20 rounded-xl p-4 flex items-start gap-3"
+        >
+          <span className="text-xl">💡</span>
+          <div className="text-sm">
+            <p className="font-semibold text-primary mb-0.5">Pro-Play Insight</p>
+            <p className="text-muted-foreground leading-relaxed">
+              <span className="text-foreground font-medium">{bestPayer.name}</span> zahlt dir{' '}
+              <span className="text-primary font-medium">{formatPerStreamRate(bestPayer.rate)}</span> pro Play &mdash; das ist{' '}
+              <span className="text-primary font-medium">{(bestPayer.rate / worstPayer.rate).toFixed(1)}x</span> mehr als {worstPayer.name} ({formatPerStreamRate(worstPayer.rate)}).
+              {bestPayer.name !== 'Spotify' && ' Verlinke deine Fans gezielt zu ' + bestPayer.name + '!'}
+            </p>
+          </div>
+        </motion.div>
+      )}
 
       {/* Platform Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
