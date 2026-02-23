@@ -10,6 +10,7 @@ import {
   Trophy,
   TrendingUp,
   Lightbulb,
+  GitCompareArrows,
   Settings,
   Upload,
   ChevronLeft,
@@ -25,6 +26,7 @@ const NAV_ITEMS = [
   { href: '/platforms', label: 'Plattformen', icon: Layers },
   { href: '/leaderboard', label: 'Rangliste', icon: Trophy },
   { href: '/trends', label: 'Trends', icon: TrendingUp },
+  { href: '/vergleich', label: 'Vergleich', icon: GitCompareArrows },
   { href: '/insights', label: 'Insights', icon: Lightbulb },
 ];
 

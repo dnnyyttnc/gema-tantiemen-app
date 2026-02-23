@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Lightbulb } from 'lucide-react';
 import { useFilteredEntries } from '@/lib/hooks/use-royalty-data';
-import { generateInsights } from '@/lib/analysis/insights-engine';
+import { generateInsights, generateComparisonInsights } from '@/lib/analysis/insights-engine';
 import { useRoyaltyStore } from '@/lib/store/royalty-store';
 import { ACHIEVEMENTS } from '@/lib/constants/achievements';
 import { useAchievementsStore } from '@/lib/store/achievements-store';
@@ -12,9 +12,19 @@ import { useAchievementsStore } from '@/lib/store/achievements-store';
 export default function InsightsPage() {
   const entries = useFilteredEntries();
   const allEntries = useRoyaltyStore((s) => s.entries);
+  const distEntries = useRoyaltyStore((s) => s.distributorEntries);
+  const eurUsdRate = useRoyaltyStore((s) => s.eurUsdRate);
   const unlocked = useAchievementsStore((s) => s.unlocked);
 
-  const insights = useMemo(() => generateInsights(entries), [entries]);
+  const gemaInsights = useMemo(() => generateInsights(entries), [entries]);
+  const comparisonInsights = useMemo(
+    () => generateComparisonInsights(allEntries, distEntries, eurUsdRate),
+    [allEntries, distEntries, eurUsdRate]
+  );
+  const insights = useMemo(
+    () => [...comparisonInsights, ...gemaInsights].sort((a, b) => b.importance - a.importance),
+    [comparisonInsights, gemaInsights]
+  );
 
   if (allEntries.length === 0) {
     return (

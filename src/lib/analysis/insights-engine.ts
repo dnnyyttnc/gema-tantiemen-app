@@ -1,4 +1,5 @@
 import type { GemaRoyaltyEntry } from '@/types/gema';
+import type { DistributorEntry } from '@/types/distributor';
 import { aggregateByCategory, aggregateByPlatform, aggregateByWork, totalEarnings, totalPlays } from './aggregations';
 import { CATEGORY_INFO } from '@/lib/constants/categories';
 import { getPlatformName } from '@/lib/constants/platforms';
@@ -156,6 +157,66 @@ export function generateInsights(entries: GemaRoyaltyEntry[]): Insight[] {
         title: 'Hidden Gem',
         body: `${mid.name} hat einen überraschend guten Pro-Play-Wert von ${formatEurCents(mid.rate)}.`,
         importance: 6,
+      });
+    }
+  }
+
+  return insights.sort((a, b) => b.importance - a.importance);
+}
+
+export function generateComparisonInsights(
+  gemaEntries: GemaRoyaltyEntry[],
+  distEntries: DistributorEntry[],
+  eurUsdRate: number
+): Insight[] {
+  if (gemaEntries.length === 0 || distEntries.length === 0) return [];
+
+  const insights: Insight[] = [];
+  const gemaTotalEur = gemaEntries.reduce((s, e) => s + e.betrag, 0);
+  const distTotalUsd = distEntries.reduce((s, e) => s + e.netAmountUsd, 0);
+  const distTotalEur = distTotalUsd * eurUsdRate;
+  const combinedEur = gemaTotalEur + distTotalEur;
+
+  // GEMA Uplift
+  if (distTotalEur > 0) {
+    const upliftPct = (gemaTotalEur / distTotalEur) * 100;
+    insights.push({
+      id: 'gema_uplift',
+      type: 'milestone',
+      emoji: '🚀',
+      title: 'GEMA-Mehrwert',
+      body: `Die GEMA zahlt ${upliftPct.toFixed(0)}% obendrauf! Ohne GEMA-Mitgliedschaft würdest du ${formatEur(gemaTotalEur)} weniger verdienen.`,
+      importance: 12,
+    });
+  }
+
+  // Combined total
+  if (combinedEur > 0) {
+    insights.push({
+      id: 'combined_earnings',
+      type: 'discovery',
+      emoji: '💎',
+      title: 'Gesamtbild',
+      body: `Dein kombiniertes Einkommen: ${formatEur(combinedEur)} (GEMA ${formatEur(gemaTotalEur)} + Vertrieb ${formatEur(distTotalEur)}).`,
+      importance: 11,
+    });
+  }
+
+  // Combined per-play rate
+  const gemaPlays = gemaEntries.reduce((s, e) => s + e.nutzungsanzahl, 0);
+  const distPlays = distEntries.reduce((s, e) => s + e.quantity, 0);
+  if (gemaPlays > 0 && distPlays > 0) {
+    const combinedRate = (gemaTotalEur + distTotalEur) / Math.max(gemaPlays, distPlays);
+    const distOnlyRate = distTotalEur / distPlays;
+    if (distOnlyRate > 0) {
+      const rateUplift = ((combinedRate - distOnlyRate) / distOnlyRate) * 100;
+      insights.push({
+        id: 'combined_rate',
+        type: 'comparison',
+        emoji: '📈',
+        title: 'Mehr pro Play',
+        body: `Mit GEMA verdienst du ${rateUplift.toFixed(0)}% mehr pro Play (${formatEurCents(combinedRate)} statt ${formatEurCents(distOnlyRate)}).`,
+        importance: 10,
       });
     }
   }

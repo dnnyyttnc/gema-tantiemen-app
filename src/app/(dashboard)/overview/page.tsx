@@ -1,11 +1,12 @@
 'use client';
 
-import { Euro, Play, Music, Crown, TrendingUp, ArrowUpRight } from 'lucide-react';
+import { Euro, Play, Music, Crown, TrendingUp, ArrowUpRight, GitCompareArrows } from 'lucide-react';
 import { StatCard } from '@/components/cards/stat-card';
 import { RevenueDonut } from '@/components/charts/revenue-donut';
 import { PlatformBars } from '@/components/charts/platform-bars';
 import { useStats, useCategoryBreakdown, usePlatformBreakdown, useSongRankings } from '@/lib/hooks/use-royalty-data';
 import { useRoyaltyStore } from '@/lib/store/royalty-store';
+import { useHasBothSources } from '@/lib/hooks/use-comparison-data';
 import { formatEur, formatNumber, formatPerStreamRate } from '@/lib/utils/format';
 import { CATEGORY_INFO } from '@/lib/constants/categories';
 import { getPlatformName, getPlatformColor } from '@/lib/constants/platforms';
@@ -20,6 +21,7 @@ export default function OverviewPage() {
   const platforms = usePlatformBreakdown();
   const songs = useSongRankings();
   const entries = useRoyaltyStore((s) => s.entries);
+  const hasBothSources = useHasBothSources();
 
   if (entries.length === 0) {
     return (
@@ -66,6 +68,27 @@ export default function OverviewPage() {
           Deine GEMA-Tantiemen im Überblick
         </p>
       </div>
+
+      {/* Comparison banner */}
+      {hasBothSources && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <Link
+            href="/vergleich"
+            className="flex items-center justify-between bg-primary/10 border border-primary/20 rounded-xl px-5 py-3 hover:bg-primary/15 transition-colors group"
+          >
+            <div className="flex items-center gap-3">
+              <GitCompareArrows className="w-5 h-5 text-primary" />
+              <span className="text-sm font-medium">GEMA + Distributor-Daten verfügbar</span>
+            </div>
+            <span className="text-xs text-primary flex items-center gap-1 group-hover:underline">
+              Zum Vergleich <ArrowUpRight className="w-3 h-3" />
+            </span>
+          </Link>
+        </motion.div>
+      )}
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

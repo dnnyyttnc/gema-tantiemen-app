@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Settings, Trash2, Download, FileText, ArrowLeft } from 'lucide-react';
+import { Trash2, Download, FileText, FileSpreadsheet, ArrowLeft, DollarSign } from 'lucide-react';
 import { useRoyaltyStore } from '@/lib/store/royalty-store';
 import { useAchievementsStore } from '@/lib/store/achievements-store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatEur } from '@/lib/utils/format';
+import { formatEur, formatUsd } from '@/lib/utils/format';
 import {
   Dialog,
   DialogContent,
@@ -20,11 +20,11 @@ import {
 import Link from 'next/link';
 
 export default function SettingsPage() {
-  const { statements, entries, removeStatement, clearAll } = useRoyaltyStore();
+  const { statements, entries, distributorStatements, distributorEntries, eurUsdRate, removeStatement, removeDistributorStatement, setEurUsdRate, clearAll } = useRoyaltyStore();
   const [showClearDialog, setShowClearDialog] = useState(false);
 
   const handleExport = () => {
-    const data = JSON.stringify({ entries, statements }, null, 2);
+    const data = JSON.stringify({ entries, statements, distributorEntries, distributorStatements, eurUsdRate }, null, 2);
     const blob = new Blob([data], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -52,10 +52,44 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Imported Statements */}
+      {/* EUR/USD Rate */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Importierte Abrechnungen</CardTitle>
+          <CardTitle className="text-base flex items-center gap-2">
+            <DollarSign className="w-4 h-4 text-primary" />
+            EUR/USD-Kurs
+          </CardTitle>
+          <CardDescription>
+            Distributor-Einnahmen werden in USD gespeichert. Dieser Kurs wird für die Umrechnung in EUR verwendet.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-3">
+            <label className="text-sm font-medium">1 USD =</label>
+            <input
+              type="number"
+              step="0.0001"
+              min="0.01"
+              max="2"
+              value={eurUsdRate}
+              onChange={(e) => {
+                const val = parseFloat(e.target.value);
+                if (!isNaN(val) && val > 0) setEurUsdRate(val);
+              }}
+              className="w-28 bg-muted border border-border rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/50"
+            />
+            <span className="text-sm text-muted-foreground">EUR</span>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Imported GEMA Statements */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <FileText className="w-4 h-4" />
+            GEMA-Abrechnungen
+          </CardTitle>
           <CardDescription>
             {statements.length === 0
               ? 'Noch keine Abrechnungen importiert.'
@@ -100,6 +134,59 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
+      {/* Distributor Statements */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <FileSpreadsheet className="w-4 h-4 text-teal-400" />
+            Distributor-Reports
+          </CardTitle>
+          <CardDescription>
+            {distributorStatements.length === 0
+              ? 'Noch keine Distributor-Reports importiert.'
+              : `${distributorStatements.length} Report${distributorStatements.length !== 1 ? 's' : ''} importiert`}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {distributorStatements.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-4 text-center">
+              Lade einen Distributor-Report (XLSX) auf der Startseite hoch.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {distributorStatements.map((s) => (
+                <motion.div
+                  key={s.id}
+                  layout
+                  className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 group"
+                >
+                  <FileSpreadsheet className="w-5 h-5 text-teal-400 shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium truncate">{s.fileName}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {s.entryCount} Einträge &middot; {formatUsd(s.totalAmountUsd)} &middot;{' '}
+                      {s.dateRange.from} – {s.dateRange.to} &middot;{' '}
+                      <span className="capitalize">{s.distributorFormat}</span>
+                    </p>
+                    {s.warnings.length > 0 && (
+                      <p className="text-xs text-yellow-500 mt-0.5">{s.warnings.join(', ')}</p>
+                    )}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeDistributorStatement(s.id)}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Export */}
       <Card>
         <CardHeader>
@@ -107,7 +194,7 @@ export default function SettingsPage() {
           <CardDescription>Exportiere alle importierten Daten als JSON-Datei.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Button variant="outline" onClick={handleExport} disabled={entries.length === 0} className="gap-2">
+          <Button variant="outline" onClick={handleExport} disabled={entries.length === 0 && distributorEntries.length === 0} className="gap-2">
             <Download className="w-4 h-4" />
             Als JSON exportieren
           </Button>
@@ -119,13 +206,13 @@ export default function SettingsPage() {
         <CardHeader>
           <CardTitle className="text-base text-destructive">Alle Daten löschen</CardTitle>
           <CardDescription>
-            Entferne alle importierten Abrechnungen und Achievements unwiderruflich.
+            Entferne alle importierten Abrechnungen, Distributor-Reports und Achievements unwiderruflich.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Dialog open={showClearDialog} onOpenChange={setShowClearDialog}>
             <DialogTrigger asChild>
-              <Button variant="destructive" disabled={entries.length === 0} className="gap-2">
+              <Button variant="destructive" disabled={entries.length === 0 && distributorEntries.length === 0} className="gap-2">
                 <Trash2 className="w-4 h-4" />
                 Alle Daten löschen
               </Button>
@@ -134,7 +221,7 @@ export default function SettingsPage() {
               <DialogHeader>
                 <DialogTitle>Alle Daten löschen?</DialogTitle>
                 <DialogDescription>
-                  Das entfernt {entries.length} Einträge aus {statements.length} Abrechnungen.
+                  Das entfernt {entries.length} GEMA-Einträge und {distributorEntries.length} Distributor-Einträge.
                   Diese Aktion kann nicht rückgängig gemacht werden.
                 </DialogDescription>
               </DialogHeader>

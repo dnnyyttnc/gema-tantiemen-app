@@ -3,10 +3,11 @@
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, FileText, Music, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Upload, FileText, Music, Loader2, CheckCircle2, AlertCircle, FileSpreadsheet } from 'lucide-react';
 import { useFileUpload } from '@/lib/hooks/use-file-upload';
+import type { UploadResult } from '@/lib/hooks/use-file-upload';
 import { useRoyaltyStore } from '@/lib/store/royalty-store';
-import { formatEur, formatNumber } from '@/lib/utils/format';
+import { formatEur, formatNumber, formatUsd } from '@/lib/utils/format';
 import { cn } from '@/lib/utils';
 
 interface DropZoneProps {
@@ -19,17 +20,19 @@ export function DropZone({ onSuccess }: DropZoneProps) {
   const { uploadFile } = useFileUpload();
   const parseError = useRoyaltyStore((s) => s.parseError);
   const [uploadState, setUploadState] = useState<UploadState>('idle');
-  const [lastResult, setLastResult] = useState<{ entries: number; total: number } | null>(null);
+  const [lastResult, setLastResult] = useState<{ entries: number; total: number; isDistributor?: boolean; totalUsd?: number } | null>(null);
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
       for (const file of acceptedFiles) {
         setUploadState('parsing');
         try {
-          const result = await uploadFile(file);
+          const result: UploadResult = await uploadFile(file);
           setLastResult({
             entries: result.entries.length,
             total: result.statement.totalBetrag,
+            isDistributor: result.isDistributor,
+            totalUsd: result.totalUsd,
           });
           setUploadState('success');
           setTimeout(() => {
@@ -48,6 +51,9 @@ export function DropZone({ onSuccess }: DropZoneProps) {
     accept: {
       'text/csv': ['.csv'],
       'application/pdf': ['.pdf'],
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+      'application/vnd.ms-excel': ['.xls'],
+      'text/tab-separated-values': ['.tsv'],
     },
     multiple: true,
   });
@@ -93,10 +99,10 @@ export function DropZone({ onSuccess }: DropZoneProps) {
 
               <div>
                 <p className="text-lg font-semibold">
-                  {isDragActive ? 'Jetzt loslassen!' : 'GEMA-Abrechnung hochladen'}
+                  {isDragActive ? 'Jetzt loslassen!' : 'GEMA oder Distributor-Report hochladen'}
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  CSV oder PDF hier ablegen oder klicken zum Auswählen
+                  CSV, PDF oder XLSX hier ablegen oder klicken zum Auswählen
                 </p>
               </div>
 
@@ -106,6 +112,9 @@ export function DropZone({ onSuccess }: DropZoneProps) {
                 </span>
                 <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
                   <FileText className="w-3.5 h-3.5" /> PDF
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
+                  <FileSpreadsheet className="w-3.5 h-3.5" /> XLSX
                 </span>
               </div>
             </motion.div>
@@ -121,7 +130,7 @@ export function DropZone({ onSuccess }: DropZoneProps) {
             >
               <Loader2 className="w-12 h-12 text-primary animate-spin" />
               <p className="text-lg font-semibold">Wird analysiert...</p>
-              <p className="text-sm text-muted-foreground">Deine Tantiemen werden ausgelesen</p>
+              <p className="text-sm text-muted-foreground">Deine Daten werden ausgelesen</p>
             </motion.div>
           )}
 
@@ -143,8 +152,15 @@ export function DropZone({ onSuccess }: DropZoneProps) {
               <div>
                 <p className="text-lg font-semibold text-emerald-400">Erfolgreich importiert!</p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {formatNumber(lastResult.entries)} Einträge &middot; {formatEur(lastResult.total)} Gesamt
+                  {formatNumber(lastResult.entries)} Einträge &middot;{' '}
+                  {lastResult.isDistributor
+                    ? formatUsd(lastResult.totalUsd || 0)
+                    : formatEur(lastResult.total)
+                  } Gesamt
                 </p>
+                {lastResult.isDistributor && (
+                  <p className="text-xs text-primary mt-1">Distributor-Report erkannt</p>
+                )}
               </div>
             </motion.div>
           )}

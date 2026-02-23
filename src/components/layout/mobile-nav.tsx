@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Layers, Trophy, TrendingUp, Lightbulb } from 'lucide-react';
+import { LayoutDashboard, Layers, Trophy, TrendingUp, GitCompareArrows, Lightbulb } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { href: '/platforms', label: 'Plattform', icon: Layers },
   { href: '/leaderboard', label: 'Ranking', icon: Trophy },
   { href: '/trends', label: 'Trends', icon: TrendingUp },
+  { href: '/vergleich', label: 'Vergleich', icon: GitCompareArrows },
   { href: '/insights', label: 'Insights', icon: Lightbulb },
 ];
 

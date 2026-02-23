@@ -52,9 +52,17 @@ export function stripBOM(text: string): string {
   return text.charCodeAt(0) === 0xFEFF ? text.slice(1) : text;
 }
 
-export function detectFileFormat(file: File): 'csv' | 'pdf' {
-  if (file.name.toLowerCase().endsWith('.pdf')) return 'pdf';
-  if (file.name.toLowerCase().endsWith('.csv')) return 'csv';
+export type FileFormat = 'csv' | 'pdf' | 'xlsx';
+
+export function detectFileFormat(file: File): FileFormat {
+  const name = file.name.toLowerCase();
+  if (name.endsWith('.pdf')) return 'pdf';
+  if (name.endsWith('.xlsx') || name.endsWith('.xls')) return 'xlsx';
+  if (name.endsWith('.tsv') || name.endsWith('.txt')) return 'xlsx'; // TSV/TXT handled by SheetJS
   if (file.type === 'application/pdf') return 'pdf';
+  if (
+    file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+    file.type === 'application/vnd.ms-excel'
+  ) return 'xlsx';
   return 'csv';
 }
