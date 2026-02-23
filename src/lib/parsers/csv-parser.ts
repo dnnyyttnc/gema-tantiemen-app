@@ -288,15 +288,22 @@ const ROLLE_TEXT: Record<string, string> = {
   'verlag': 'V',
 };
 
+// Generic catalog/subscription type terms that don't identify a platform
+const GENERIC_CATALOG_TERMS = new Set([
+  'subscription', 'streaming', 'download', 'free', 'premium', 'family',
+  'individual', 'student', 'duo', 'standard', 'basic',
+]);
+
 // Clean up licensee names to friendly platform names
 function cleanPlatformName(lizenznehmer: string, katalog: string, aboType: string): string {
   const friendly = katalog || aboType || '';
   if (friendly) {
     const cleaned = friendly.replace(/-+$/, '').replace(/[_-](HIFI|normal|premium|free|family).*$/i, '').trim();
-    if (cleaned) return cleaned;
+    if (cleaned && !GENERIC_CATALOG_TERMS.has(cleaned.toLowerCase())) return cleaned;
   }
   return lizenznehmer
-    .replace(/\s+(AS|SA|GmbH|Inc|Ltd|LLC|SE|AG|B\.V\.|BV|AB|Oy|S\.A\.|SAS|S\.r\.l\.)\.?\s*$/i, '')
+    .replace(/\s+(AS|SA|GmbH|Inc\.?|Ltd\.?|LIMITED|LLC|SE|AG|B\.V\.|BV|AB|Oy|S\.A\.|SAS|S\.r\.l\.)\.?\s*$/i, '')
+    .replace(/\s+(IRELAND|DEUTSCHLAND|GERMANY)\s*$/i, '')
     .replace(/\s+Music\s*$/i, '')
     .trim();
 }
@@ -338,6 +345,46 @@ export function parseCsvFile(fileContent: string, fileName: string): CsvParseRes
   // v2.0+ uses '.' as decimal separator, v1.0 uses ',' (German locale)
   const parseNum = v2 ? parseNumber : parseGermanNumber;
 
+  // =====================================================================
+  // SUM files (Summenblätter) contain only aggregated totals per Sparte
+  // without per-work detail. We record them as statement metadata for
+  // validation but do NOT create GemaRoyaltyEntry records to prevent
+  // double-counting (SUM totals duplicate KMP/detail data).
+  // =====================================================================
+  if (variant === 'summary') {
+    let sumTotal = 0;
+    let sumPeriod = '';
+    for (const row of result.data) {
+      const mapped: Record<string, string> = {};
+      for (const [csvCol, internalField] of Object.entries(columnMapping)) {
+        if (row[csvCol] !== undefined && row[csvCol] !== '') {
+          mapped[internalField] = row[csvCol];
+        }
+      }
+      const rawBetrag = (mapped.betragGebucht || mapped.betrag || '0').trim();
+      sumTotal += parseNum(rawBetrag);
+      if (!sumPeriod) {
+        sumPeriod = (mapped.verteilungsPeriode || '').trim();
+      }
+    }
+    const sumYear = sumPeriod ? extractYear(sumPeriod) : '';
+    return {
+      entries: [],
+      statement: {
+        id: `csv_${now}_${fileName}`,
+        fileName,
+        fileType: 'csv',
+        formatVariant: 'summary',
+        importedAt: now,
+        geschaeftsjahr: sumYear || 'Unbekannt',
+        verteilungsPeriode: sumPeriod || sumYear || 'Unbekannt',
+        entryCount: 0,
+        totalBetrag: sumTotal,
+        warnings: ['Summenblatt importiert — enthält nur Gesamtsummen zur Validierung, keine Einzelpositionen.'],
+      },
+    };
+  }
+
   let geschaeftsjahr = '';
   let verteilungsPeriode = '';
 
@@ -373,7 +420,13 @@ export function parseCsvFile(fileContent: string, fileName: string): CsvParseRes
         }
       }
 
-      const werktitel = (mapped.werktitel || 'Unbekannt').trim();
+      // ZSL (Zuschlag/supplement) files have no Werktitel but do have a
+      // Zuschlagsart (supplement type) — use that as a descriptive title
+      let werktitel = (mapped.werktitel || '').trim();
+      if (!werktitel && mapped.supplementType) {
+        werktitel = `Zuschlag: ${mapped.supplementType.trim()}`;
+      }
+      if (!werktitel) werktitel = 'Unbekannt';
 
       // =====================================================================
       // ROLE resolution
